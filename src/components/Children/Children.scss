@@ -1,0 +1,17 @@
+fieldset {
+  position: relative;
+  .overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background: rgba(255,255,255,.9);
+    z-index: 2;
+    &>div {
+      text-align: center !important;
+      color: DeepSkyBlue;
+      margin-top: 50px;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "ModalConfig",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ModalConfig.js"
+}

@@ -1,0 +1,39 @@
+.device-ports {
+  &.table {
+    border: 1px solid #ddd;
+    display: table;
+    width: auto;
+    .table-body {
+      display: table-row-group;
+      background: #fff;
+      width: 100%;
+      .table-row {
+        display: table-row;
+        .table-cell {
+          display: table-cell;
+          vertical-align: middle;
+          text-align: center;
+          padding: 2px;
+          .interval {
+            display: inline-block;
+            padding: 2px;
+            width: 32px;
+            height: 32px;
+          }
+          .icon {
+            display: inline-block;
+            padding: 2px;
+            width: 32px;
+            height: 32px;
+            border: 2px solid #ddd;
+            &.up {
+              background-image: url(./ether.svg);
+              background-position: 2px 2px;
+              background-repeat: no-repeat;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+// .c-radio {
+//   padding-right: 10px;
+// }
+/* style button group */
+.radio-btn-group {
+    label:first-child em {
+        border-bottom-left-radius: 4px;
+        border-top-left-radius: 4px;
+    }
+
+    label:last-child em {
+        border-bottom-right-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    label + label {
+        margin-left: -1px;
+    }
+
+    input {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+    
+        &:checked + em {
+            background-color: #0ea1d7;
+            border-color: #0ea1d7;
+            transition: all .5s;
+            color: white;
+        }
+    }        
+
+    em {
+        padding: 6px 16px;
+        font-size: 13px;
+        border: 1px solid #ddd;
+        -webkit-appearance: none;
+        outline: none !important;
+        -webkit-transition: all 0.1s;
+        -o-transition: all 0.1s;
+        transition: all 0.1s;
+        font-style: normal;
+    }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Subbar",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Subbar.js"
+}

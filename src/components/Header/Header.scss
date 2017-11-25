@@ -1,0 +1,15 @@
+.app-header.navbar .navbar-brand {
+  background-image: url("./logo.png");
+  background-size: 29px auto;
+  background-position: 44px center;
+
+  &::before {
+    content: "FortiADC";
+    color: white;
+    position: absolute;
+    left: 84px;
+    top: 10px;
+    font-weight: bold;
+    font-size: 22px;
+  }
+}
