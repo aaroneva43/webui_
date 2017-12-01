@@ -1,5 +1,4 @@
-import _ from 'underscore';
-import s from 'underscore.string';
+import _ from 'lodash';
 
 export function ExtendModuleNode(gidNode, macroGidMap, macroNameMap) {
   console.log('======== Extend module node ========');
@@ -55,14 +54,14 @@ export function ExtendModuleNode(gidNode, macroGidMap, macroNameMap) {
       }
       parts.push(node.name);
       var modelName = parts.join(' ');
-      modelName = s.slugify(modelName);
+      modelName = _.trim(modelName).split(' ').join('-').toLowerCase()
       modelName = modelName.replace(/-/g, '_');
       node.modelName = modelName;
       node.moduleName = name;
 
-      if (!_.contains(parts, 'child')) {
+      if (!_.includes(parts, 'child')) {
         var phpClassName = parts.join('_');
-        phpClassName = s.classify(phpClassName);
+        phpClassName = _.trim(phpClassName).split('_').map(itm => _.upperFirst(itm)).join('')
         node.phpClassName = phpClassName;
       }
 
@@ -154,7 +153,7 @@ export function ExtendNodeConditions(gidNode, conditions) {
         console.log('Ignore condition', condition, 'of', gid);
         return;
       }
-      if (!_.contains(dependees, dependee_fieldname)) {
+      if (!_.includes(dependees, dependee_fieldname)) {
         dependees.push(dependee_fieldname);
       }
       var choices;
@@ -193,59 +192,77 @@ export function ExtendNodeConditions(gidNode, conditions) {
 }
 
 export function getModuleInfo(gid, data) {
-  var moduleNode = data.GidNodeMap[gid] || {},
+
+  var moduleNode = _.get(data, `GidNodeMap.${gid}`, {}),
     fieldNodes = [],
-    moduleInfo = {};
-  moduleInfo.module = moduleNode;
-  moduleInfo.fields = fieldNodes;
+    moduleInfo = {}
+
+  moduleInfo.module = moduleNode
+  moduleInfo.fields = fieldNodes
+
   if (_.isEmpty(moduleNode)) {
-    console.log('No node mapped to gid', gid);
-    return moduleInfo;
+    console.log('No node mapped to gid', gid)
+    return moduleInfo
   }
   var moduleName = moduleNode.moduleName,
-    fields = data.ModuleFieldsMap[moduleName] || [],
-    children = {};
+    fields = _.get(data, `ModuleFieldsMap.${moduleName}`, []),
+    children = {}
+
   _.each(fields, function (field) {
     var fieldName = field.fieldName,
-      fieldMacro = field.attrgid;
-    var fieldGid = null;
+      fieldMacro = field.attrgid
+
+    var fieldGid = null
     if (fieldMacro) {
-      fieldGid = data.MacroGidMap[fieldMacro];
+      fieldGid = _.get(data, `MacroGidMap.${fieldMacro}`)
     }
 
-    var valType = field.valType;
-    if (s.startsWith(valType, 'CHILD')) {
+    var valType = field.valType
+
+    if (_.startsWith(valType, 'CHILD')) {
       children[valType] = fieldGid;
       if (!fieldGid) {
         console.log(fieldName, 'has no attrgid');
       }
     }
 
-    var fieldNode = null;
+    var fieldNode = null
+
     if (fieldGid) {
-      fieldNode = data.GidNodeMap[fieldGid];
+      fieldNode = _.get(data, `GidNodeMap.${fieldGid}`)
     }
     if (fieldNode) {
       fieldNodes.push(fieldNode);
     } else {
       fieldNodes.push(field);
     }
-  });
+  })
+
   if (!_.isEmpty(children)) {
-    moduleInfo.children = children;
+    moduleInfo.children = children
   }
 
-  var specifics = data.Specifics && data.Specifics[gid];
+  var specifics = data.Specifics && _.get(data, `Specifics.${gid}`)
+
   if (specifics) {
-    _.extend(moduleInfo, _.omit(specifics, 'module'));
+    _.extend(moduleInfo, _.omit(specifics, 'module'))
     if (specifics.module) {
-      _.extend(moduleInfo.module, specifics.module);
+      _.extend(moduleInfo.module, specifics.module)
     }
   }
 
   return moduleInfo;
 }
 
+export function extendNode(gid_node, macro_gid, macro_name, module_fields, conditions) {
+
+  let GidNodeMap = ExtendModuleNode(gid_node, macro_gid, macro_name)
+
+  GidNodeMap = ExtendFieldNode(GidNodeMap, macro_gid, module_fields)
+  GidNodeMap = ExtendNodeConditions(GidNodeMap, conditions)
+
+  return GidNodeMap
+}
 
 export const generateMenuData = (menu, menuPieces) => {
 
@@ -261,4 +278,33 @@ export const generateMenuData = (menu, menuPieces) => {
   }
 
   return menuData
+}
+
+
+export function getGidByPath(path, modules) {
+
+  path = _.isString(path) ? path.match(/[^\/].+[^\/]/g)[0].split('/') : path
+
+  let p = path.shift(),
+    m = modules.find(itm => itm.name === p),
+    gid
+
+
+  if (m.children) {
+    return getGidByPath(path, m.children)
+
+  } else if (m.modules) {
+    return getGidByPath(path, m.modules)
+
+  } else {
+    if (m.gid) {
+      gid = m.gid
+
+    } else if (m.widget) {
+      gid = m.widget
+    }
+
+  }
+
+  return gid
 }

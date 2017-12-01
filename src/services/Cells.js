@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import DualListBox from 'react-dual-listbox';
-import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 export function AvailabilityCell() {
   return {
@@ -17,7 +15,7 @@ export function AvailabilityCell() {
   };
 }
 
-export function ActionsCell(cols) {
+export function ActionsCell() {
   return {
     Cell: ({ original }) => {
       return (
@@ -36,7 +34,10 @@ export function ActionsCell(cols) {
     },
     Header: () => {
       return (
-        <Columns columns={ cols } callback={ this.toggleFilter } displayCols={ this.state.displayCols } displayColumns={ this.displayColumns } />
+        <span>
+          <i className="fa fa-cog" onClick={ this.toggleColsDD }></i>
+          <i className="fa fa-filter ml-3" onClick={ this.toggleFilter } ></i>
+        </span>
       );
     },
     accessor: 'actions',
@@ -76,52 +77,4 @@ export function CheckboxCell() {
     sortable: false,
     width: 45
   };
-}
-
-class Columns extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dropdownOpen: false,
-      selected: this.props.displayCols
-    };
-    this.onChange = this.onChange.bind(this);
-    this.toggle = this.toggle.bind(this);
-  }
-
-  onChange(selected) {
-    this.props.displayColumns(selected);
-    this.setState({ selected });
-  }
-
-  toggle() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen
-    });
-  }
-
-  render() {
-    const colsList = (items) => {
-      return items.map( (item) => {
-        return {value: item.name, label: item.label};
-      } ).filter( (item) => {
-        return typeof item.value !== 'undefined';
-      } );
-    };
-
-    return (
-      <span>
-        <i className="fa fa-cog" onClick={ this.toggle }></i>
-        <i className="fa fa-filter ml-3" onClick={ this.props.callback } ></i>
-        { this.state.dropdownOpen &&
-          <div className="card card-columns">
-            <div className="card-body">
-              <DualListBox options={ colsList(this.props.columns) } selected={this.state.selected} onChange={this.onChange} />
-            </div>
-          </div>
-        }
-      </span>
-    );
-  }
 }

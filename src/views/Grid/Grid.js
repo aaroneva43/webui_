@@ -5,8 +5,9 @@ import request from 'superagent';
 import {Container, Table, Button} from 'reactstrap';
 import 'react-table/react-table.css';
 import { getModuleInfo } from '../../services/Data';
+import ColsDD from './ColsDD';
 import { AvailabilityCell, ActionsCell, CheckboxCell } from '../../services/Cells';
-import SweetAlert from 'sweetalert-react';
+import SweetAlert from 'sweetalert2-react';
 
 // redux stuff
 import { configEntryAdd, configEntryEdit, configEntryDone, configEntryReset } from '../../actions/processActions';
@@ -26,36 +27,36 @@ class Grid extends Component {
     this.state = {
       data: [],
       columns: [],
-      showColumns: [0,1,2,3,4],
       gid: null,
       selected: {},
       selectAll: 0,
       modalShow: false,
-      moduelInfo: {},
+      moduleInfo: {},
       formId: null,
       filterOpen: false,
       deleteRow: {},
       deleteBulk: [],
       showAlert: false,
-      displayCols: []
+      displayCols: [],
+      colsDDOpen: false
     };
 
     this.toggleRow = this.toggleRow.bind(this);
     this.toggleFilter = this.toggleFilter.bind(this);
-    this.displayColumns = this.displayColumns.bind(this);
+    this.toggleColsDD = this.toggleColsDD.bind(this);
+    this.setSelectedColumns = this.setSelectedColumns.bind(this);
   }
 
   componentDidMount() {
     const moduleInfo = getModuleInfo(this.props.gid, this.props.store.ConfigData);
-    this.setState({ gid: this.props.gid, moduleInfo: moduleInfo });
-    this.setColumns( moduleInfo.columns );
+    this.setState({ gid: this.props.gid, moduleInfo: moduleInfo, displayCols: this.getDisplayCols(moduleInfo.columns) }, function(){
+      this.setColumns(moduleInfo.columns);
+    });
     this.fetchGrid(this.props.gid);
     //this.fetchGrid('static/config_data/api/'+moduleInfo.module.modelName+'.json');
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('dave nextProps (Grid) ========> ', nextProps.store)
-    console.log('this.props.gid : ', this.props.gid, ' --- ', 'nextProps.gid: ', nextProps.gid);
     //if(nextProps.store.ConfigData.formId) {
       this.setState({ formId: nextProps.store.ConfigData.formId, data: this.props.store.ConfigData.data }); // hack: just change the state
       this.fetchGrid(nextProps.gid);
@@ -63,10 +64,12 @@ class Grid extends Component {
 
     if(this.props.gid !== nextProps.gid){
       const moduleInfo = getModuleInfo(nextProps.gid, this.props.store.ConfigData);
-      this.setState({ gid: nextProps.gid, moduleInfo: moduleInfo, formId: nextProps.store.ConfigData.formId });
-      this.setColumns( moduleInfo.columns );
+      this.setState({ gid: nextProps.gid, moduleInfo: moduleInfo, formId: nextProps.store.ConfigData.formId, displayCols: this.getDisplayCols(moduleInfo.columns) }, function(){
+        this.setColumns(moduleInfo.columns);
+      });
       this.fetchGrid(nextProps.gid);
       //this.fetchGrid('static/config_data/api/'+moduleInfo.module.modelName+'.json');
+      this.setState({colsDDOpen: false});
     }
   }
 
@@ -87,7 +90,6 @@ class Grid extends Component {
   // I think this has to be in dispatch
   // this.props.dispatch(fetchGrid())
   fetchGrid(gid) {
-    console.log('dave: (Grid) fetchGrid gid: ', this.props.gid, ' param gid: ', gid)
     if (gid == '1775') {
       let localArray = localStorage.getItem('data');
       //console.log('dave: (Grid) ==> ', localArray, ' - ', typeof localArray);
@@ -101,7 +103,7 @@ class Grid extends Component {
     }
   }
 
-  setDisplayColumns(cols) {
+  getDisplayCols(cols) {
     let counter = 0;
     let displayCols = cols.filter( (item, index) => {
       if (
@@ -115,7 +117,7 @@ class Grid extends Component {
     } ).map( (item) => {
       return item.name;
     } );
-    this.setState({ displayCols: displayCols });
+
     return displayCols;
   }
 
@@ -123,11 +125,6 @@ class Grid extends Component {
     if(typeof cols === 'undefined' ) return;
 
     const that = this;
-    let displayCols = this.state.displayCols;
-
-    if(!this.state.displayCols.length) {
-      displayCols = this.setDisplayColumns(cols);
-    }
 
     if (cols[0].cell !== 'checkbox') {
       cols.unshift({ cell: 'checkbox' });
@@ -139,7 +136,7 @@ class Grid extends Component {
     if (!_.isEmpty(cols)) {
       let colsList = cols.filter(function(item) {
         if (
-          displayCols.includes(item.name) ||
+          that.state.displayCols.includes(item.name) ||
           ['checkbox', 'actions'].includes(item.cell)
         ) {
           return true;
@@ -149,7 +146,7 @@ class Grid extends Component {
         if (col.cell === 'checkbox') {
           return CheckboxCell.call(that);
         } else if (col.cell === 'actions') {
-          return ActionsCell.call(that, cols);
+          return ActionsCell.call(that);
         } else if (col.cell === 'availability') {
           return AvailabilityCell();
         } else {
@@ -167,9 +164,19 @@ class Grid extends Component {
     this.setState({filterOpen: !this.state.filterOpen});
   }
 
-  displayColumns(cols) {
-    this.setState({ displayCols: cols });
-    this.setColumns( this.state.moduleInfo.columns );
+  toggleColsDD() {
+    this.setState({colsDDOpen: !this.state.colsDDOpen});
+  }
+
+  setSelectedColumns(cols) {
+    let that = this;
+    if (cols) {
+      this.setState({ displayCols: cols, colsDDOpen: false }, function(){
+        this.setColumns( that.state.moduleInfo.columns );
+      });
+    } else {
+      this.setState({ colsDDOpen: false });
+    }
   }
 
   toggleSelectAll() {
@@ -233,13 +240,16 @@ class Grid extends Component {
             <Button color="secondary">Refresh</Button>
           </div>
         </div>
+        { this.state.colsDDOpen &&
+          <ColsDD allCols={ this.state.moduleInfo.columns } displayCols={ this.state.displayCols } setSelectedColumns={ this.setSelectedColumns } />
+        }
         <div className="table">
           <ReactTable
             data={this.state.data}
             filterable
             columns={this.state.columns}
             defaultPageSize={10}
-            minRows={5}
+            minRows={3}
             noDataText= 'No Data Found'
             className={this.state.filterOpen !== true ? '' :  'filter-expand'}
           />

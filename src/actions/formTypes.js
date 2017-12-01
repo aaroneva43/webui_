@@ -8,6 +8,7 @@ export const fetch_Specifics = 'fetch_Specifics';
 export const fetch_Menu = 'fetch_Menu';
 export const fetch_MenuPieces = 'fetch_MenuPieces';
 export const fetch_Templates = 'fetch_Templates';
+export const fetch_WidgetForm = 'fetch_WidgetForm';
 export const fetch_GidNodeMap = 'fetch_GidNodeMap';
 export const fetch_ModuleFieldsMap = 'fetch_ModuleFieldsMap';
 export const fetch_Conditions = 'fetch_Conditions';

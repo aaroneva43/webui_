@@ -23,7 +23,6 @@ class Form extends Component {
       mergedFields: [],
       specifics: {},
       gid: this.props.gid,
-      formData: {},
       activeTab: 0,
       templates: this.props.store.ConfigData.Templates
     };
@@ -34,11 +33,12 @@ class Form extends Component {
     // const configData = props.store.ConfigData;
     // const configVars = props.store.ConfigVars;
     const moduleInfo = props.moduleInfo;
+    ///console.log('zzz ===> ', props)
     if (
       this.state.gid !== null &&
       !_.isEmpty(moduleInfo)
     ) {
-      //  console.log('dave this props (Form) ===> ', props)
+     // console.log('dave this props (Form) ===> ', props)
       //alert('this Props')
       this.fetchData(moduleInfo);
     }
@@ -278,6 +278,7 @@ class Form extends Component {
     let tmpl = this.state.templates[this.state.gid] ? this.state.templates[this.state.gid] : this.state.templates['default'];
 
     const field = (item, key) => {
+      //console.log('dave item: ', item, ' - key: ', key)
       for (var element of myFields) {
         if(element.fieldName == item) {
           if(element.conditions && element.conditions.conditions) {
@@ -390,7 +391,7 @@ class Form extends Component {
 function validate(values, props) {
   const validateConfig = {};
 
-  // console.log('validate props ===> ', props);
+  //console.log('validate props ===> ', props);
 
    _.each(props.moduleInfo.fields, ({ name, fieldName, validate }) => {
     //  console.log('validate name ===> ', name)
@@ -477,12 +478,6 @@ function validate(values, props) {
   return validateConfig;
 }
 
-function getFormName(gid) {
-  console.log('dave form gid: ', gid)
-  console.log('dave form gid2: ')
- return gid;
-};
-
 Form = reduxForm({
   validate,
   //form: formName, // a unique identifier for this form
@@ -491,8 +486,8 @@ Form = reduxForm({
 
 Form = connect(
   state => ({
-    initialValues: state.operConfigEntry.stackObjArray[0].formdata,
-    form: state.operConfigEntry.stackObjArray[0].gid
+    initialValues: state.operConfigEntry.stackObjArray[state.operConfigEntry.stackObjArray.length-1].formdata,
+    form: state.operConfigEntry.stackObjArray[state.operConfigEntry.stackObjArray.length-1].gid
   })
 )(Form);
 

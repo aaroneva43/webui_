@@ -27,7 +27,7 @@ class Widget extends Component {
     let RequestLazyBundle = <div />;
 
     try {
-      RequestLazyBundle = require('./widgets/'+this.state.widget).default;
+      RequestLazyBundle = require('./widgets/'+this.state.widget+'/'+this.state.widget).default;
     } catch (ex) {
       error = true;
     }

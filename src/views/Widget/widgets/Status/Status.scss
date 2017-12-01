@@ -1,0 +1,18 @@
+.dl-horizontal {
+  dt {
+    float: left;
+    width: 160px;
+    overflow: hidden;
+    clear: left;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  dd {
+      margin-left: 180px;
+  }
+}
+
+.update-firmware-form {
+  text-align: left;
+}

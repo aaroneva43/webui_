@@ -1,0 +1,63 @@
+{
+  "default": [],
+  "1": [
+    ["mkey", "status", "connection", "allowaccess", "dedicate-to-management", "vdom", "type", "mode", "traffic-group", "floating", "floating-ip"],
+    {
+      "fieldSet": "Type Specifics",
+      "children": ["vlanid", "interface", "redundant-member", "aggregate-mode", "aggregate-algorithm"]
+    },
+    {
+      "fieldSet": "Mode Specifics",
+      "children": ["ip", "ip6", "secondary-ip", "defaultgw", "pppoe-status", "pppoe-ip-netmask", "pppoe-dns", "pppoe-defaultgw", "username", "password", "disc-retry-timeout", "dns-server-override", "default-gw", "dhcp_ip_overlap", "dhcp-ip-netmask", "dhcp_gateway", "dhcp_gw_override", "dhcp_gw_distance"]
+    }
+  ],
+  "1775": [
+    {
+      "tabs": [
+        {
+          "tab": "Basic",
+          "children": [
+            ["mkey", "status", "type", "addr-type", "traffic-group"],
+            {
+              "fieldSet": "Specifics",
+              "children": ["schedule-list", "schedule-pool-list", "content-routing", "content-routing-list", "content-rewriting", "content-rewriting-list", "packet-fwd-method", "source-pool-list", "trans-rate-limit"]
+            }
+          ]
+        },
+        {
+          "tab": "General",
+          "children": [
+            {
+              "fieldSet": "Configuration",
+              "children": ["address", "address6", "port", "protocol", "connection-limit", "connection-rate-limit", "interface"]
+            },
+            {
+              "fieldSet": "Resources",
+              "children": ["profile", "client_ssl_profile", "persistence", "method", "pool", "auth_policy", "scripting_flag", "scripting_list", "l2-exception-list", "http2https", "http2https-port"]
+            },
+            {
+              "fieldSet": "Error Page",
+              "children": ["error-page", "error-msg"]
+            }
+          ]
+        },
+        {
+          "tab": "Security",
+          "children": ["waf-profile"]
+        },
+        {
+          "tab": "SSL Traffic Mirror",
+          "children": ["ssl-mirror", "ssl-mirror-intf"]
+        },
+        {
+          "tab": "Application Optimization",
+          "children": ["pagespeed"]
+        },
+        {
+          "tab": "Traffic Log",
+          "children": ["traffic-log"]
+        }
+      ]
+    }
+  ]
+}

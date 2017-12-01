@@ -3,99 +3,104 @@ import { put, call, take, fork, cancel, cancelled } from 'redux-saga/effects'
 import cookie from 'js-cookie'
 
 import { SUCCESS, FAILURE, PENDING, LOGIN, AUTH, GET_CONFIG_DATA } from '../actions/actionTypes'
-import { getMenu } from '../actions/configData'
 
 import api from '../api'
 
 import _ from 'lodash'
 
-import { extendNode } from '../services/Data';
+import { generateMenuData, extendNode } from '../services/Data';
 
 
 
 export default function* sagas() {
 
-    // LOGIN
-    yield takeEvery(LOGIN, function* (action) {
-        try {
-            put({ type: `${LOGIN}/${PENDING}` })
+    // // LOGIN
+    // yield takeEvery(LOGIN, function* (action) {
+    //     try {
+    //         put({ type: `${LOGIN}/${PENDING}` })
 
-            const { username, password } = action.payload
+    //         const { username, password } = action.payload
 
-            const res = yield call(api.login, { username: username, password: password })
+    //         const res = yield call(api.login, { username: username, password: password })
 
-            if (res.success == true) {
-                cookie.set('token', res.result.token)
-                yield put({ type: `${LOGIN}/${SUCCESS}` })
+    //         if (res.success == true) {
+    //             cookie.set('token', res.result.token)
+    //             yield put({ type: `${LOGIN}/${SUCCESS}` })
 
-            } else {
-                yield put({ type: `${LOGIN}/${FAILURE}` })
+    //         } else {
+    //             yield put({ type: `${LOGIN}/${FAILURE}` })
 
-            }
+    //         }
 
-        } catch (e) {
-            yield put({
-                type: `${LOGIN}/${FAILURE}`,
-                error: e
-            })
+    //     } catch (e) {
+    //         yield put({
+    //             type: `${LOGIN}/${FAILURE}`,
+    //             error: e
+    //         })
 
-        }
+    //     }
 
-    })
+    // })
 
-    // AUTH
-    yield takeEvery(AUTH, function* (action) {
-        try {
-            put({ type: `${AUTH}` })
+    // // AUTH
+    // yield takeEvery(AUTH, function* (action) {
+    //     try {
+    //         put({ type: `${AUTH}` })
 
-            const res = yield call(api.auth, { token: cookie.get('token') })
+    //         const res = yield call(api.auth, { token: cookie.get('token') })
 
-            if (res.success == true) {
+    //         if (res.success == true) {
 
-                // cookie.set('token', res.result)
+    //             // cookie.set('token', res.result)
 
-                yield put({ type: `${AUTH}/${SUCCESS}`, payload: { token: res.result.token } })
+    //             yield put({ type: `${AUTH}/${SUCCESS}`, payload: { token: res.result.token } })
 
-            } else {
-                yield put({ type: `${AUTH}/${FAILURE}`, payload: res.result.message })
+    //         } else {
+    //             yield put({ type: `${AUTH}/${FAILURE}`, payload: res.result.message })
 
-            }
+    //         }
 
 
-        } catch (e) {
-            yield put({ type: `${AUTH}/${FAILURE}`, payload: e })
-        }
-    })
+    //     } catch (e) {
+    //         yield put({ type: `${AUTH}/${FAILURE}`, payload: e })
+    //     }
+    // })
 
     // GET config data
     yield takeEvery(GET_CONFIG_DATA, function* (action) {
         try {
             put({ type: `${GET_CONFIG_DATA}` })
 
-            let config_data = {}
+            let configData = {}
             action.payload = _.castArray(action.payload)
 
             for (let i = 0; i < action.payload.length; i++) {
                 let itm = action.payload[i]
-                let res = yield call(api.config_data, { url: itm.url })
-                config_data[itm.entry] = res.result
+
+                let res = yield call(api.getConfigData, { url: itm.url })
+                configData[itm.entry] = res.result
             }
 
             // generate gid_node_local
-            const { gid_node, macro_gid, macro_name, module_fields, conditions } = config_data
+            const { GidNode, MacroGidMap, MacroNameMap, ModuleFieldsMap, Conditions } = configData
 
-            if (gid_node && macro_gid && macro_name && module_fields && conditions) {
-                config_data['gid_node_map'] = yield call(extendNode, gid_node, macro_gid, macro_name, module_fields, conditions)
+            if (GidNode && MacroGidMap && MacroNameMap && ModuleFieldsMap && Conditions) {
+
+                configData['GidNodeMap'] = yield call(extendNode, GidNode, MacroGidMap, MacroNameMap, ModuleFieldsMap, Conditions)
 
             }
-            yield put({ type: `${GET_CONFIG_DATA}/${SUCCESS}`, payload: config_data })
 
             // generate menu_data
-            if (config_data.menu && config_data.menu_pieces) {
-                yield put(getMenu(config_data.menu, config_data.menu_pieces))
-            } else {
-                console.error('menu generation failed')
+            if (configData.Menu && configData.MenuPieces) {
+                configData['MenuData'] = generateMenuData(configData.Menu, configData.MenuPieces)
+
             }
+
+            window.cD = configData // debug TOBEREMOVED
+
+            yield put({ type: `${GET_CONFIG_DATA}/${SUCCESS}`, payload: configData })
+
+
 
 
 

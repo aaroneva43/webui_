@@ -1,7 +1,7 @@
 export const LOGIN = 'LOGIN'
 export const AUTH = 'AUTH'
 export const GET_CONFIG = 'GET_CONFIG'
-export const GET_STATICS = 'GET_CONFIG_DATA'
+export const GET_CONFIG_DATA = 'GET_CONFIG_DATA'
 export const GET_MENU = 'GET_MENU'
 export const POST_CONFIG = 'POST_CONFIG'
 export const PUT_CONFIG = 'PUT_CONFIG'

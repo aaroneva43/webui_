@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
-import {Link, Switch, Route, Redirect} from 'react-router-dom';
-import {Container} from 'reactstrap';
+import React, { Component, createElement } from 'react';
+import { Link, Switch, Route, Redirect } from 'react-router-dom';
+import { Container } from 'reactstrap';
 import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
+import Navigator from '../../components/Navigator/';
 import Aside from '../../components/Aside/';
 import Tside from '../../components/Tside/';
 import Footer from '../../components/Footer/';
@@ -32,57 +33,59 @@ class Full extends Component {
   // }
 
   componentWillReceiveProps(nextProps) {
-    const gidNode = _.cloneDeep(nextProps.store.ConfigData.GidNode);
-    const macroGidMap = nextProps.store.ConfigData.MacroGidMap;
-    const macroNameMap = nextProps.store.ConfigData.MacroNameMap;
-    const moduleFieldsMap = nextProps.store.ConfigData.ModuleFieldsMap;
-    const gidNodeMap = nextProps.store.ConfigData.GidNodeMap;
-    const conditions = nextProps.store.ConfigData.Conditions;
+    // const gidNode = _.cloneDeep(nextProps.store.ConfigData.GidNode);
+    // const macroGidMap = nextProps.store.ConfigData.MacroGidMap;
+    // const macroNameMap = nextProps.store.ConfigData.MacroNameMap;
+    // const moduleFieldsMap = nextProps.store.ConfigData.ModuleFieldsMap;
+    // const gidNodeMap = nextProps.store.ConfigData.GidNodeMap;
+    // const conditions = nextProps.store.ConfigData.Conditions;
 
-    if (
-      !isEmpty(gidNode) &&
-      !isEmpty(macroGidMap) &&
-      !isEmpty(macroNameMap) &&
-      !isEmpty(moduleFieldsMap) &&
-      !isEmpty(conditions) &&
-      isEmpty(gidNodeMap)
-    ) {
-      let gidNodeLocal = ExtendModuleNode(gidNode, macroGidMap, macroNameMap);
-      gidNodeLocal = ExtendFieldNode(gidNodeLocal, macroGidMap, moduleFieldsMap);
-      gidNodeLocal = ExtendNodeConditions(gidNodeLocal, conditions);
-      nextProps.dispatch(setGidNodeMap(gidNodeLocal));
-    }
+    // if (
+    //   !isEmpty(gidNode) &&
+    //   !isEmpty(macroGidMap) &&
+    //   !isEmpty(macroNameMap) &&
+    //   !isEmpty(moduleFieldsMap) &&
+    //   !isEmpty(conditions) &&
+    //   isEmpty(gidNodeMap)
+    // ) {
+    //   let gidNodeLocal = ExtendModuleNode(gidNode, macroGidMap, macroNameMap);
+    //   gidNodeLocal = ExtendFieldNode(gidNodeLocal, macroGidMap, moduleFieldsMap);
+    //   gidNodeLocal = ExtendNodeConditions(gidNodeLocal, conditions);
+    //   nextProps.dispatch(setGidNodeMap(gidNodeLocal));
+    // }
   }
 
   render() {
 
-    console.log(this.props.location.pathname);
+    const { location, menuData } = this.props
 
     return (
       <div className="app">
-        <Header />
+        {/* <Header /> */}
+        
+        <Header {...this.props} />
         <div className="app-body">
-          <Tside />
-          <Sidebar {...this.props}/>
-          <div className="adc-vdom-container">
+          {/* <Tside /> */}
+          {/* <Sidebar {...this.props} /> */}
+          {/* <div className="adc-vdom-container">
             Global
-          </div>
+          </div> */}
           <main className="main">
-              <Switch>
-                <Route path="/dashboard" name="Dashboard" component={Dashboard}/>
-                <Route path="/config/:id/:id2/:id3/:id4" name="Config" component={Config}/>
-                <Route path="/config/:id/:id2/:id3" name="Config" component={Config}/>
-                <Route path="/config/:id/:id2" name="Config" component={Config}/>
-                <Route path="/config/:id" name="Config" component={Config}/>
-                <Redirect from="/" to="/config/status/status"/>
-              </Switch>
+            <Switch>
+              <Route path="/dashboard" name="Dashboard" component={Dashboard} />
+              <Route path="/config/" name="Config" render={({ location }) => { return createElement(Config, { location, menu: menuData }) }} />
+              {/* <Route path="/config/:id/:id2/:id3" name="Config" component={Config} />
+              <Route path="/config/:id/:id2" name="Config" component={Config} />
+              <Route path="/config/:id" name="Config" component={Config} /> */}
+              <Redirect from="/" exact to="/config/status/Main" />
+            </Switch>
           </main>
           <Aside />
-          <ModalConfig /> 
+          <ModalConfig />
         </div>
       </div>
     );
   }
 }
 
-export default Full;
+export default connect(states => ({ menuData: _.get(states, 'ConfigData.MenuData') }))(Full);

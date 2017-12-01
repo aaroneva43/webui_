@@ -1,0 +1,76 @@
+{
+
+"default": {},
+
+"SystemGettingStartedMaintenance": {
+
+    "mkey": {
+        "label": "Name",
+        "placeholder": "Required config name. No spaces"
+      },
+
+      "dst": {
+				"label": "Daylight Saving Time",
+				"type": "checkbox",
+				"value": "enable",
+				"boxLabel": "",
+				"checked": "enable",
+				"unchecked": "disable"
+			},
+			"tz": {
+				"label": "Time Zone",
+				"placeholder": "Required. Select the timezone.",
+				"type": "select",
+				"options": {
+					"labelField": "name",
+					"valueField": "val"
+				}
+			},
+			"ntpsync": {
+				"label": "NTP",
+				"type": "checkbox",
+				"boxLabel": "",
+				"checked": "enable",
+				"unchecked": "disable"
+			},
+			"ntpserver": {
+				"label": "NTP Server",
+				"placeholder": "Required. Specify the IP address or FQDN.",
+				"help": "Space-separated list of IP addresses or FQDNs.",
+				"value": "pool.ntp.org",
+				"conditions": {
+					"dependees": [
+						"ntpsync"
+					],
+					"conditions": [
+						"ntpsync eq enable"
+					]
+				},
+				"type": "text"
+            },
+            
+            "syncinterval": {
+				"label": "Synchronizing Interval",
+				"placeholder": "Required. Specify the interval.",
+				"help": "Default: 60 Range: 1-1440 minutes",
+				"value": "60",
+				"conditions": {
+					"dependees": [
+						"ntpsync"
+					],
+					"conditions": [
+						"ntpsync eq enable"
+					]
+				},
+				"type": "text",
+				"validate": {
+					"number": {
+						"minVal": 1,
+						"maxVal": 1440
+					}
+				}
+			}
+
+}
+
+}

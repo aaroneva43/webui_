@@ -1,12 +1,28 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import ReactDOM from 'react-dom'
+import { Router, HashRouter, Route, Switch } from 'react-router-dom'
 import { createBrowserHistory } from 'history';
-import { fetchGidMacroMap, fetchMacroGidMap, fetchMenu, fetchMenuPieces, fetchSpecifics, fetchGidNode, fetchGidNodeMap, fetchMacroNameMap, fetchModuleFieldsMap, fetchConditions, fetchTemplates } from './actions/formActions';
+import { fetchGidMacroMap, fetchMacroGidMap, fetchMenu, fetchMenuPieces, fetchSpecifics, fetchGidNode, fetchGidNodeMap, fetchMacroNameMap, fetchModuleFieldsMap, fetchConditions, fetchTemplates } from './actions/formActions'
 
-/// redux addition
-import { Provider } from 'react-redux';
-import getStore from './store';
+
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
+import { Provider, connect } from 'react-redux'
+
+import createHistory from 'history/createBrowserHistory'
+import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
+import { reducer as formReducer } from 'redux-form'
+
+import reducers from './reducers'
+
+import 'babel-polyfill'
+import createSagaMiddleware from 'redux-saga'
+import sagas from './sagas'
+
+
+
+
+import routes from './routes'
+import { getConfigData } from './actions/configData'
 
 
 
@@ -24,28 +40,27 @@ import '../scss/core/_dropdown-menu-right.scss'
 // Containers
 import Full from './containers/Full/'
 
-const history = createBrowserHistory();
+// middlewares
+const history = createHistory({ basename: '/' })
+const sagaMiddleware = createSagaMiddleware()
+const middleware = [routerMiddleware(history), sagaMiddleware]
 
-const store = getStore()
+// support redux-dev-tool
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-// load data
-store.dispatch(fetchGidNode('./static/config_data/scanned/gid_node.json'));
-store.dispatch(fetchMacroGidMap('./static/config_data/scanned/macro_gid.json'));
-store.dispatch(fetchMacroNameMap('./static/config_data/scanned/macro_name.json'));
-store.dispatch(fetchModuleFieldsMap('./static/config_data/scanned/module_fields.json'));
-store.dispatch(fetchConditions('./static/config_data/scanned/conditions.json'));
-store.dispatch(fetchSpecifics('./static/config_data/saved/Specifics.json'));
-store.dispatch(fetchGidMacroMap('./static/config_data/scanned/gid_macro.json'));
-store.dispatch(fetchMenu('./static/config_data/manual/menu.json'));
-store.dispatch(fetchMenuPieces('./static/config_data/manual/menu_pieces.json'));
-store.dispatch(fetchTemplates('./static/config_data/manual/templates.json'));
+// create store
+const store = createStore(reducers, composeEnhancers(applyMiddleware(...middleware)))
+
+sagaMiddleware.run(sagas)
+
+store.dispatch(getConfigData())
 
 ReactDOM.render((
   <Provider store={store}>
-    <HashRouter>
+    <ConnectedRouter history={history}>
       <Switch>
         <Route path="/" name="Home" component={Full} />
       </Switch>
-    </HashRouter>
+    </ConnectedRouter>
   </Provider>
-), document.getElementById('root'));
+), document.getElementById('root'))

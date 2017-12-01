@@ -1,5 +1,5 @@
 
-const API_BASE = 'http://127.0.0.1:9999/api/v1'
+const API_BASE = '/api/v1'
 const headers = {
     'Accept': 'application/json, text/plain, */*',
     'Content-Type': 'application/json'
@@ -31,7 +31,7 @@ export default {
         })
             .then(response => response.json())
     },
-    statics: (cfg) => {
+    getConfigData: (cfg) => {
         return fetch(`${API_BASE}/${cfg.url}`, { headers: headers }).then(response => response.json())
     }
 }

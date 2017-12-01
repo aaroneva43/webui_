@@ -137,6 +137,24 @@ export function fetchTemplates(api_url) {
   }
 }
 
+export function fetchWidgetForm(api_url) {
+  return dispatch => {
+    return request
+      .get(api_url)
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        if (err) {
+          dispatch(loadFormFailure(err));
+        } else {
+          dispatch({
+            type: types.fetch_WidgetForm,
+            payload: res.body
+          });
+        }
+      });
+  }
+}
+
 export function fetchSpecifics(api_url) {
   return dispatch => {
     return request

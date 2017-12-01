@@ -1,2 +1,4 @@
+.map
 build
+compilation-stats.json
 node_modules
