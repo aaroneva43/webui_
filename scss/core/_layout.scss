@@ -385,3 +385,26 @@ app-root {
     }
   }
 }
+
+
+// FortiWAN overrides
+html, body {
+  height: 100%;
+  margin:0;
+  border:0;
+}
+
+.header-fixed {
+  .app-header {
+    position: inherit;
+    z-index: $zindex-sticky;
+    width: 100%;
+  }
+  .app-body {
+    margin-top: 0
+  }
+  .app {
+    height: 100%;
+  }
+}
+
