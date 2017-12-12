@@ -10,13 +10,17 @@ class SystemInfo extends Component {
     };
   }
 
+  handleClose() {
+    this.props.close('SystemInfo');
+  }
+
   render() {
     return (
       <div className="card">
         <div className="card-header">
           System Information
           <div className="card-actions">
-            <a href><i className="fa fa-times"></i></a>
+            <button type="button" className="btn btn-link" onClick={ this.handleClose.bind(this) }><i className="fa fa-times"></i></button>
           </div>
         </div>
         <div className="card-block">

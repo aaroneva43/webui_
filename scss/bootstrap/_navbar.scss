@@ -20,7 +20,7 @@
   display: flex;
   flex-wrap: wrap; // allow us to do the line break for collapsing content
   align-items: center;
-  // justify-content: space-between; // space out brand from logo
+  justify-content: space-between; // space out brand from logo
   padding: $navbar-padding-y $navbar-padding-x;
 
   // Because flex properties aren't inherited, we need to redeclare these first
@@ -281,4 +281,29 @@
   .navbar-text {
     color: $navbar-dark-color;
   }
+}
+
+// FortiWAN overrides
+.navbar {
+    color: $navbar-color;
+    height: 50px;
+    .nav-pills {
+       padding: 0rem;
+    }
+    > li {
+      &.active {
+          background: $navbar-active-bg-color;
+      }
+    }
+    > li > a {
+      color: $navbar-color;
+
+      &:hover {
+        color: lighten($navbar-color, 70%);
+        transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        -webkit-transform: scale(1.1);
+        text-decoration: none;
+      }
+    }
 }

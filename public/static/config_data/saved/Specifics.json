@@ -2781,7 +2781,6 @@
     }
   },
   "732": {
-    "widget": {},
     "editors": {
       "excluded_fields": [
         "theme",

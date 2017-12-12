@@ -1,16 +1,7 @@
 import React, {Component} from 'react';
-import Form2 from '../../../../components/Form/Form2';
-import { getModuleInfo } from '../../../../services/Data';
-import { configEntryAdd, configEntryEdit, configEntryDone, configEntryReset } from '../../../../actions/processActions';
-import { connect } from 'react-redux';
+import FormContainer from '../../../../components/Form/FormContainer';
 
-@connect((store) => {
-  return {
-    store
-  };
-})
-
-class SystemSettingsFortiGuard extends Component {
+class SystemSettingsMaintenance extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,14 +11,12 @@ class SystemSettingsFortiGuard extends Component {
 
   render() {
 
-    let moduleInfo = getModuleInfo(this.state.gid, this.props.store.ConfigData);
-
     return (
       <div className="widget">
-        <Form2 gid={ this.state.gid } moduleInfo={moduleInfo} />
+        <FormContainer gid={ this.state.gid } />
       </div>
     );
   }
 }
 
-export default SystemSettingsFortiGuard;
+export default SystemSettingsMaintenance;

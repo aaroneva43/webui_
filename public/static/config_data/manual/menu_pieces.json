@@ -1273,6 +1273,23 @@
       "name": "Main",
       "text": "Main",
       "widget": "Status"
+    }, {
+      "name": "services",
+      "text": "Services",
+      "icon": "",
+      "children": [{
+        "name": "link_analytics",
+        "text": "Links",
+        "widget": "LinkAnalytics"
+      },{
+        "name": "link_health",
+        "text": "Health",
+        "widget": "LinkAnalytics"
+      },{
+        "name": "link_event",
+        "text": "Event",
+        "widget": "LinkEvent"
+      }]
     }]
   },
   "view": {

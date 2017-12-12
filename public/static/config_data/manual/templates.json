@@ -59,5 +59,14 @@
         }
       ]
     }
+  ],
+  "732": [
+    ["http-port", "https-port", "https-server-cert", "ssh-port", "telnet-port", "admin-idle-timeout", "sys-global-language", "hostname", "vdom-admin", "ip_primary", "ip_second", "config-sync-enable", "default-intermediate-ca-group"]
+  ],
+  "65_zz": [
+    ["dst", "tz", "ntpsync", "ntpserver", "syncinterval"]
+  ],
+  "260_zz": [
+    ["scheduled-update-status", "scheduled-update-frequency", "scheduled-update-day", "scheduled-update-time", "override-server-status", "override-server-address", "tunneling-status", "tunneling-address", "tunneling-port", "tunneling-username", "tunneling-password"]
   ]
 }

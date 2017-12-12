@@ -158,7 +158,7 @@ class Navigator extends React.PureComponent {
                 <div >
                     {
                         menu.depth === 0 &&
-                        <Nav pills>
+                        <Nav pills className={'navbar'}>
                             <Dropdown title={<span>{menu.selectedChildText}</span>} nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                                 <DropdownToggle nav caret>
                                     {menu.selectedChildText}
@@ -169,7 +169,7 @@ class Navigator extends React.PureComponent {
                                         (menu.children || []).map((itm) => {
                                             return <DropdownItem
                                                 key={itm.name}
-                                                className={itm.url == location.pathname ? 'ant-menu-item-selected ant-menu-item' : ''}
+                                                className={itm.url == location.pathname ? 'navbar' : 'navbar'}
                                             >
                                                 <Link to={itm.url}>{itm.text}</Link>
                                             </DropdownItem>
@@ -183,7 +183,7 @@ class Navigator extends React.PureComponent {
                             {
                                 _.get((menu.children || []).find(itm => itm.name === menu.selectedChild), 'children', []).map((itm) => {
                                     return <NavItem
-                                        className={itm.url == location.pathname ? 'ant-menu-item-selected ant-menu-item' : ''}
+                                        className={itm.url == location.pathname ? 'navbar active' : 'navbar'}
                                         key={itm.name}
                                     >
                                         <Link to={itm.url}>{itm.text}</Link>
@@ -206,7 +206,7 @@ class Navigator extends React.PureComponent {
                                     return <NavItem
                                         style={{ height: 32, lineHeight: '32px' }}
                                         key={itm.name}
-                                        className={itm.url == location.pathname ? 'ant-menu-item-selected ant-menu-item' : ''}
+                                        className={itm.url == location.pathname ? 'navbar' : 'navbar'}
                                     >
                                         <Link to={itm.url}>{itm.text}</Link>
                                     </NavItem>

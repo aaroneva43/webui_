@@ -47,14 +47,14 @@ class Header extends Component {
 
     return (
       <header className="app-header navbar">
-        <NavbarBrand href="#/config/status/status"></NavbarBrand>
+        {/*<NavbarBrand href="#/config/status/status"></NavbarBrand>*/}
         <Navigator
           location={location}
           menuData={menuData}
         />
-        <div className='adc-header-tools adc-vdom-menu'>
+        {/*<div className='adc-header-tools adc-vdom-menu'>
           <i className='fa fa-th-large' onClick={(e) => this.tsideToggle(e)} />
-        </div>
+        </div>*/}
         <div className={`pull-right adc-header-tools mr-5 ${this.state.coverHide === true ? 'show' : ''}`}>
 
           <i className={`fa fa-bell-o ${this.state.activeFa === 'bell' ? 'active' : ''}`} onClick={(e) => this.asideToggle(e, 'bell')} />

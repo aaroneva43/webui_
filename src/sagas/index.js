@@ -67,6 +67,7 @@ export default function* sagas() {
     // })
 
     // GET config data
+
     yield takeEvery(GET_CONFIG_DATA, function* (action) {
         try {
             put({ type: `${GET_CONFIG_DATA}` })
@@ -94,6 +95,11 @@ export default function* sagas() {
             if (configData.Menu && configData.MenuPieces) {
                 configData['MenuData'] = generateMenuData(configData.Menu, configData.MenuPieces)
 
+            }
+
+            // set localStorage
+            if (!localStorage.DBPanelsShow) {
+                localStorage.setItem("DBPanelsShow", JSON.stringify({current: 'Main', dbs: {Main: ['SystemInfo', 'HAInfo', 'VSThroughput', 'InterfaceThroughput', 'LicenseInfo', 'CPU', 'Disk', 'RAM', 'VSConnections', 'RecentEventLogs']}}));
             }
 
             window.cD = configData // debug TOBEREMOVED

@@ -19,7 +19,7 @@ $navbar-disabled-color:               lighter($navbar-color, 20%);
 
 // Sidebar
 $sidebar-bg:                          #3B4549;
-$sidebar-width:                       0px;
+$sidebar-width:                       260px;
 $mobile-sidebar-width:                260px;
 
 // Sidebar Navigation
@@ -44,12 +44,7 @@ $breadcrumb-borders:                  0;
 $footer-bg:                           $gray-800;
 $footer-color:                        #fff;
 
-
-
-
-
-
-
-
 // FortiWAN overrides
 $navbar-height:                       auto;
+$navbar-bg:                           #5e5e5e;
+$sidebar-width:                       0px;

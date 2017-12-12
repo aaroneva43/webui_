@@ -5,7 +5,7 @@ import { isEmpty } from '../../services/Utils';
 import Subbar from '../../components/Subbar/';
 import Grid from '../../views/Grid/';
 import Widget from '../../views/Widget/';
-import Form2 from '../../components/Form/Form2';
+import FormContainer from '../../components/Form/FormContainer';
 import { getModuleInfo, getGidByPath } from '../../services/Data';
 
 // redux stuff
@@ -81,19 +81,17 @@ class Config extends Component {
       isWidget = this.props.store.ConfigData.Specifics[this.state.gid]['widget'];
     }
 
-    let moduleInfo = getModuleInfo(this.state.gid, this.props.store.ConfigData);
     return (
       <div>
         {/* <Subbar {...this.props} /> */}
         <Container fluid>
-
-          {this.state.gid ? typeof isWidget === 'object' ? (
-            <Form2 gid={this.state.gid} moduleInfo={moduleInfo} />
-          ) : (
-              <Grid gid={this.state.gid} />
+          {this.state.gid ? typeof this.props.store.ConfigData.Specifics[this.state.gid].columns === 'undefined' ? (
+            <FormContainer gid={ this.state.gid } />
             ) : (
-              <Widget widget={this.state.widget} />
-            )}
+            <Grid gid={ this.state.gid } />
+            ) : (
+            <Widget widget={ this.state.widget } {...this.props} />
+          )}
         </Container>
 
       </div>

@@ -7,6 +7,7 @@ import { configEntryAdd, configEntryEdit, configEntryDone, configEntryReset } fr
 import classnames from 'classnames';
 import { Field, reduxForm } from 'redux-form'
 import _ from 'underscore';
+import s from 'underscore.string';
 
 @connect((store) => {
   return {
@@ -64,24 +65,46 @@ class Form extends Component {
     ///fids = specifics[props.gid].editors;
     ///Fields = _.omit(fids, ['excluded_fields']);
 
-    let editorsObj = props.editors;
+    let editorsObj = props.editors; // specific
     let fieldsArr = props.fields;
-    let Fields = [];
+    let Fields1 = [];
+    let Fields2 = [];
     let newObj = {};
+    let newObj2 = {};
+    let newObj3 = {};
 
-    // console.log('editorsObj ==> ', editorsObj)
-    // console.log('fieldsArr ===> ', fieldsArr)
-
+    // merge Field with speicific object
     fieldsArr.map(arr=> {
       for (const prop in editorsObj) {
         if (arr.fieldName === prop) {
-          newObj = Object.assign(arr, editorsObj[prop])
-        } else {
-          newObj = arr;
+          newObj = Object.assign(arr, editorsObj[prop]);
         }
       }
-      return Fields.push(newObj);
+      return Fields1.push(newObj); // update
     })
+
+    // remove not needed prop (ex: fields_order) this is from (Specific) (based/original)
+    for (let key in editorsObj) {
+        if (!Array.isArray(editorsObj[key])) {
+          newObj2['fieldName'] = key;
+          newObj3 = Object.assign(newObj2, editorsObj[key])
+          Fields2.push(_.clone(newObj3))
+        }
+    }
+
+// console.log('what is Fields1 (Arr) => ', Fields1) // update (merged)
+// console.log('what is Fields2 (Obj) => ', Fields2) 
+
+    for(var i = 0, l = Fields2.length; i < l; i++) {
+      for(var j = 0, ll = Fields1.length; j < ll; j++) {
+          if(Fields2[i].fieldName === Fields1[j].fieldName) {
+              Fields2.splice(i, 1, Fields1[j]);
+              break;
+        }
+      }
+    }
+
+  const Fields = Fields2;
 
     // console.log('Fields ======> ', Fields)
     const NewFields = Fields.filter(elem => {
@@ -389,91 +412,164 @@ class Form extends Component {
 }
 
 function validate(values, props) {
-  const validateConfig = {};
+  
+  var validateConfig = {};
+  var fields = props.moduleInfo.fields;
+  //var mustFields = [];
+  var options = {};
 
   //console.log('validate props ===> ', props);
 
-   _.each(props.moduleInfo.fields, ({ name, fieldName, validate }) => {
-    //  console.log('validate name ===> ', name)
-    //  console.log('validate validate ===> ', validate)
+   _.each(fields, function(field) {
+     
+    ///console.log('validate each ===> ', field.validate)
+    var parseflag_hidden_reverse = [
+					"5018", //"G_LOAD_BALANCE_CONTENT_ROUTING_FORWARDING_METHOD"
+					"5019"  //"G_LOAD_BALANCE_CONTENT_ROUTING_SRC_POOL_LIST"
+				];
 
-    if (fieldName === 'mkey' && !values[fieldName]) {
-        validateConfig[fieldName] = 'Please provide a value';
+    var fieldName = field.fieldName;
+    var mkeyField = 'mkey';
+
+      if (!fieldName) {
+        console.log('This field has no \'fieldName\'', field);
+        return;
+      }
+      
+      if (fieldName == 'port') {
+        console.log('help text: ', field);
+      }
+
+      var valType = field.valType;
+      if (s.startsWith(valType, 'CHILD')) {
+        console.log('Ignore', valType);
+        return;
+      }
+
+      var parseflags = field.parseflag || [];
+          // 'skip' fields can be ignored
+      if (_.contains(parseflags, 'skip')) {
+        console.log('Ignore \'skip\' field', fieldName);
+        return;
+      }
+
+      // 'hidden' fields can be ignored
+      if (_.contains(parseflags, 'hidden') && !_.contains(parseflag_hidden_reverse, field.gid)) {
+        console.log('Ignore \'hidden\' field', fieldName);
+        return;
+      }
+
+      if (fieldName === mkeyField && field.property === 'INT') {
+        console.log('Ignore \'INT\' mkey field');
+        return;
+      }
+
+					
+    // validation starts here:
+    if (fieldName === mkeyField && !values[fieldName]) {
+        validateConfig[fieldName] = 'This field is required.';
     }
 
-    if (fieldName && validate && typeof validate === 'string' && validate.indexOf(':') >= 0) {
+    if (_.contains(parseflags, 'must')) {
+				validateConfig[fieldName] = 'This field is required.';
+    }
+    
+    if (_.isObject(field.validate) && !_.isEmpty(field.validate) && field.validate['required']) {
+        validateConfig[fieldName] = 'This field is required.';
+    }
+    
+    if (field.ipversion) {
+            
+              var value = values[fieldName];
+              options = {
+								multiple: field.multiAttr ? true : false,
+								ipversion: field.ipversion
+              };
 
-        // console.log('validate what? ==> ', typeof validate)
-        // console.log('validate value ==> ', validate)
-
-          var validateParts = validate.split(':'),
-              validateType = validateParts[0],
-              validateValue = validateParts[1];
-            // if (validateType === 'RANGE') {
-            // 	var validateValues = validateValue.split(','),
-            // 		minValue = validateValues[0],
-            // 		maxValue = validateValues[1];
-            // 	validateConfig.number = {
-            // 		minVal: parseInt(minValue),
-            // 		maxVal: parseInt(maxValue)
-            // 	};
-            // } else
-            if (validateType === 'REGEX' && values[fieldName]) {
-            // (!/validateValue/.test(values[name]))
-              // console.log('validate fieldName ==> ', fieldName)
-              // console.log('validate regex ==> ', values[name])
-              // console.log('validate val ==> ', validateValue)
-              let pattern = new RegExp(validateValue)
-              console.log('validate reg ===> ', pattern)
-              if (!pattern.test(values[fieldName])) {
-                return validateConfig[fieldName] = `Please specify ${pattern} option`;
+              console.log('ip addr field:: ', field.label, ' - ', field.ipversion)
+              
+              if (!value) {
+                return;
               }
-            }
+              options = options || {
+                multiple: false
+              };
+            
+              var ipv4Pattern = /^((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))$/;
+			        var ipv6Pattern = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
 
-            // if (validateType === 'IP_ADDRESS') {
-            //   console.log('validate ip_address ==> ', values[name])
-            //   return validateConfig[name] = `bad ip address`;
-            // }
-
-            else if (validateType === 'RANGE' && values[name]) {
-
-              var validateValues = validateValue.split(','),
-                minValue = validateValues[0],
-                maxValue = validateValues[1];
-                //console.log('validate range ===> ', validateType, validateValue)
-
-                if (!validateValues) {
-                  return validateConfig[name] = 'required';
+              if (options.ipversion == 4) {
+                if (!ipv4Pattern.test(value)) {
+                  validateConfig[fieldName] = 'This field should be a valid ipv4 address';
                 }
-                var pattern = /^(0|-?[1-9]\d*)$/;
-                // console.log('validate range : ===> ', validateValues)
-                if (pattern.test(validateValues)) {
-                  let val = parseInt(validateValues);
-                  if ( val < minValue) {
-                    return validateConfig[name] = 'The minimum value is '+minValue;
-                  }
-                  if ( val > maxValue) {
-                    return validateConfig[name] = 'The maximum value is '+maxValue;
-                  }
-                } else {
-                  // console.log('vvvvv ===> ', values[name], validateConfig[name], minValue)
-                  return validateConfig[name] = 'This field should be a valid number';
+              } else if (options.ipversion == 6) {
+                if (!ipv6Pattern.test(value)) {
+                  validateConfig[fieldName] = 'This field should be a valid ipv6 address';
                 }
+              } else {
+                if (!ipv4Pattern.test(value) && !ipv6Pattern.test(value)) {
+                  validateConfig[fieldName] = 'This field should be a valid ip address'.i18n()+(options.multiple ? '. Use space to separate multiple values'.i18n() : '');
+                }
+              }
 
-            }
+          }
 
-        }
+    if (fieldName && field.validate && typeof field.validate === 'string' && field.validate.indexOf(':') >= 0) {
+      //if (!_.isEmpty(field.validate) && typeof validate === 'string') {
 
-				if (validateType === 'IP_ADDRESS') { // IP_ADDRESS:RELAXED
-						validateConfig.ipaddr = {
-							multiple: field.multiAttr ? true : false,
-							ipversion: field.ipversion
+          var validateParts = field.validate.split(/:(.+)/),//this will only split and stop at the first occurence of ':'
+							validateType = validateParts[0],
+              validateValue = validateParts[1];
+          var value;
+              
+          if (validateType === 'RANGE') {
+              value = values[fieldName];
+            	var validateValues = validateValue.split(','),
+            		minValue = validateValues[0],
+            		maxValue = validateValues[1];
+            	options = {
+            		minVal: parseInt(minValue),
+            		maxVal: parseInt(maxValue)
+              };
+
+              if (!value) {
+                return;
+              }
+              options = options || {
+                multiple: false
+              };
+
+              if (_.isNumber(options.minVal) && (value < options.minVal)) {
+                validateConfig[fieldName] = `The minimum value is ${options.minVal}`;
+              }
+              if (_.isNumber(options.maxVal) && (value > options.maxVal)) {
+                validateConfig[fieldName] = `The maximum value is ${options.maxVal}`;
+              }
+              
+
+          } else if (validateType === 'REGEX') {
+              value = values[fieldName];
+              options = {
+                regex: validateValue,
+								multiple: field.multiAttr ? true : false
+              }
+              if (!value) {
+                return;
+              }
+
+              options = options || {
+                multiple: false
             };
-
-            return validateConfig[name] = 'This field should be a valid IP address';
-					}
-
-
+            if (!options.regex) {
+              return 'Please specify \'regex\' option for \'regex\' validator'.i18n();
+            }
+            var pattern = new RegExp(options.regex);
+            //var vals = options.multiple ? values[fieldName].split(' ') : [val];
+            if (!pattern.test(value)) {
+                validateConfig[fieldName] = `Invalid value, should match regular expression ${pattern}`;
+            }
+          } 
+        } // end of if
    });
   return validateConfig;
 }

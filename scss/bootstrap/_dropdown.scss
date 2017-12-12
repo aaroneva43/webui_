@@ -126,3 +126,28 @@
   color: $dropdown-header-color;
   white-space: nowrap; // as with > li > a
 }
+
+// FortiWAN overrides
+.dropdown-menu {
+  background-color: $navbar-bg;
+
+  > button {
+    > a {
+      color: $navbar-color;
+
+      &:hover {
+        color: lighten($navbar-color, 70%);
+        transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        -webkit-transform: scale(1.1);
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.dropdown-item {
+  @include hover-focus {
+    background-color: $navbar-bg;
+  }
+}

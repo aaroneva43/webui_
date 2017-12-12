@@ -1,5 +1,5 @@
 {
-  "name": "genesisui-react",
+  "name": "fortiadc",
   "version": "1.8.6",
   "private": true,
   "homepage": ".",
@@ -52,6 +52,7 @@
     "match-sorter": "^2.0.2",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
+    "react-beautiful-dnd": "^3.0.0",
     "react-chartjs-2": "2.6.1",
     "react-dom": "^16.0.0",
     "react-dual-listbox": "^1.3.0",
