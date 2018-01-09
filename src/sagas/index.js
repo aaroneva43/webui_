@@ -99,7 +99,7 @@ export default function* sagas() {
 
             // set localStorage
             if (!localStorage.DBPanelsShow) {
-                localStorage.setItem("DBPanelsShow", JSON.stringify({current: 'Main', dbs: {Main: ['SystemInfo', 'HAInfo', 'VSThroughput', 'InterfaceThroughput', 'LicenseInfo', 'CPU', 'Disk', 'RAM', 'VSConnections', 'RecentEventLogs']}}));
+                localStorage.setItem("DBPanelsShow", JSON.stringify({current: 'Main', dbs: {Main: ['SystemInfo', 'HAInfo', 'Bandwidth', 'Sessions', 'LicenseInfo', 'CPU', 'Disk', 'RAM', 'SessionRate', 'RecentEventLogs']}}));
             }
 
             window.cD = configData // debug TOBEREMOVED

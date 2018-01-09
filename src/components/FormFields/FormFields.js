@@ -141,22 +141,25 @@ export class CheckBoxField extends Component {
     const { input, label, placeholder, desc, disabled, meta: { touched, error }, ...rest} = this.props;
 
     return (
-      <div>
+      <div className="">
         <Label className="control-label">{label} {error && <span className="form-must-icon">*</span>}</Label>
-        { tooltip.call(this) }
+         { tooltip.call(this) }
+        <FormGroup>
+       
         {
           this.props.options.map((option, i)=>{
             return (
-              <FormGroup>
-                <Label className="checkbox c-checkbox">
+            
+                <Label className="checkbox c-checkbox checkbox-inline">
                   <input {...input} label={option.label} value={option.value} placeholder={placeholder} type="checkbox" disabled={disabled} {...rest} />
                   <em className="fa fa-circle"></em>{option.label}
                 </Label>
-                {touched && error && <span className="form-hint-text">{error}</span>}
-              </FormGroup>
+           
             )
+             {touched && error && <span className="form-hint-text">{error}</span>}
           })
         }
+        </FormGroup>
       </div>
     );
   }

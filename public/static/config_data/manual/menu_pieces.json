@@ -1272,7 +1272,15 @@
     "children": [{
       "name": "Main",
       "text": "Main",
+<<<<<<< HEAD
+<<<<<<< HEAD
       "widget": "Status"
+=======
+      "widget": "Status_"
+>>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
+=======
+      "widget": "Status_"
+>>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
     }, {
       "name": "services",
       "text": "Services",
@@ -1282,6 +1290,8 @@
         "text": "Links",
         "widget": "LinkAnalytics"
       },{
+<<<<<<< HEAD
+<<<<<<< HEAD
         "name": "link_health",
         "text": "Health",
         "widget": "LinkAnalytics"
@@ -1289,6 +1299,61 @@
         "name": "link_event",
         "text": "Event",
         "widget": "LinkEvent"
+=======
+=======
+>>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
+        "name": "virtual_server",
+        "text": "Virtual Server",
+        "widget": "VirtualServer"
+      },{
+        "name": "firewall",
+        "text": "Firewall",
+        "widget": "Firewall"
+      },{
+        "name": "dns",
+        "text": "DNS",
+        "widget": "DNS"
+      }]
+    }, {
+      "name": "Monitor",
+      "text": "Monitor",
+      "icon": "",
+      "children": [{
+        "name": "LLB",
+        "text": "LLB",
+	"widget": "LLB"
+      },{
+        "name": "virtual_server",
+	"text": "Virtual Server",
+        "widget": "VirtualServer"
+      },{
+        "name": "system",
+        "text": "System",
+        "modules": [{
+          "name": "DHCP_monitor",
+          "text": "DHCP Monitor",
+	  "gid": "5053"
+        },{
+          "name": "FQDN_monitor",
+          "text": "FQDN Monitor",
+          "gid": "5339"
+        },{
+          "name": "Routing_monitor",
+          "text": "Routing Monitor",
+          "widget": "RoutingMonitor"
+        },{
+          "name": "MAC_monitor",
+          "text": "MAC Monitor",
+          "widget": "MACMonitor"
+        },{
+          "name": "IPSec_tunnel",
+          "text": "IPSec Tunnel",
+	  "gid": "5200"
+        }]
+<<<<<<< HEAD
+>>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
+=======
+>>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
       }]
     }]
   },
@@ -1302,17 +1367,26 @@
         "widget": "PhysicalTopology"
       },
       {
-        "name": "tree",
-        "text": "Logical Topology",
-        "widget": "ViewTree"
+        "name": "view_ha",
+        "text": "High Availability",
+        "children": [{
+          "name": "ha_status",
+          "text": "HA Status",
+          "widget": "HAStatus"
+        }]
       },
       {
         "name": "server_load_balance",
         "text": "Server Load Balance",
         "children": [{
-            "name": "list",
+            "name": "slb_tree",
+            "text": "Logical Topology",
+            "widget": "SlbTree"
+          },
+          {
+            "name": "slb_list",
             "text": "Virtual Server",
-            "widget": "ViewList"
+            "widget": "SlbVirtualServer"
           },
           {
             "name": "slb_analytics",
@@ -1323,6 +1397,36 @@
             "name": "slb_traffic_log",
             "text": "Traffic Logs",
             "widget": "SlbTrafficEventLog"
+          }
+        ]
+      },
+      {
+        "name": "link_load_balance",
+        "text": "Link Load Balance",
+        "children": [{
+            "name": "llb_tree",
+            "text": "Logical Topology",
+            "widget": "LlbTree"
+          },
+          {
+            "name": "llb_list",
+            "text": "Link Group",
+            "widget": "LlbLinkGroup"
+          }
+        ]
+      },
+      {
+        "name": "global_load_balance",
+        "text": "Global Load Balance",
+        "children": [{
+            "name": "glb_tree",
+            "text": "Logical Topology",
+            "widget": "GlbTree"
+          },
+          {
+            "name": "glb_list",
+            "text": "Host",
+            "widget": "GlbHost"
           }
         ]
       },
@@ -1396,7 +1500,193 @@
     "children": [{
         "name": "log_browsing",
         "text": "Log Browsing",
-        "widget": "HistoryLog"
+        "widget": "HistoryLog",
+        "modules": [{
+            "name": "event_log",
+            "text": "Event Log",
+            "widget": "LogBrowsing",
+            "type": "event",
+            "sub": [{
+                "name": "history_log_config",
+                "text": "Configuration",
+                "subType": "config"
+              },
+              {
+                "name": "history_log_system",
+                "text": "System",
+                "subType": "system"
+              },
+              {
+                "name": "history_log_admin",
+                "text": "Admin",
+                "subType": "admin"
+              },
+              {
+                "name": "history_log_user",
+                "text": "User",
+                "subType": "user"
+              },
+              {
+                "name": "history_log_health_check",
+                "text": "Health Check",
+                "subType": "health_check"
+              },
+              {
+                "name": "history_log_slb",
+                "text": "SLB",
+                "subType": "slb"
+              },
+              {
+                "name": "history_log_llb",
+                "text": "LLB",
+                "subType": "llb"
+              },
+              {
+                "name": "history_log_dns",
+                "text": "GLB",
+                "subType": "dns"
+              },
+              {
+                "name": "history_log_fw",
+                "text": "Firewall",
+                "subType": "fw"
+              }
+            ]
+          },
+          {
+            "name": "security_log",
+            "text": "Security Log",
+            "widget": "LogBrowsing",
+            "type": "attack",
+            "sub": [{
+                "name": "history_log_ip_reputation",
+                "text": "IP Reputation",
+                "subType": "ip_reputation"
+              },
+              {
+                "name": "history_log_synflood",
+                "text": "Synflood",
+                "subType": "synflood"
+              },
+              {
+                "name": "history_log_waf",
+                "text": "WAF",
+                "subType": "waf"
+              },
+              {
+                "name": "history_log_geo",
+                "text": "GEO",
+                "subType": "geo"
+              }
+            ]
+          },
+          {
+            "name": "traffic_log",
+            "text": "Traffic Log",
+            "widget": "LogBrowsing",
+            "type": "traffic",
+            "sub": [{
+                "name": "history_log_slb_layer4",
+                "text": "SLB Layer 4",
+                "subType": "slb_layer4"
+              },
+              {
+                "name": "history_log_slb_http",
+                "text": "SLB HTTP",
+                "subType": "slb_http"
+              },
+              {
+                "name": "history_log_slb_tcps",
+                "text": "SLB TCPS",
+                "subType": "slb_tcps"
+              },
+              {
+                "name": "history_log_slb_radius",
+                "text": "SLB RADIUS",
+                "subType": "slb_radius"
+              },
+              {
+                "name": "history_log_slb_dns",
+                "text": "GLB",
+                "subType": "dns"
+              },
+              {
+                "name": "history_log_slb_sip",
+                "text": "SLB SIP",
+                "subType": "slb_sip"
+              },
+              {
+                "name": "history_log_slb_rdp",
+                "text": "SLB RDP",
+                "subType": "slb_rdp"
+              },
+              {
+                "name": "history_log_slb_dns2",
+                "text": "SLB DNS",
+                "subType": "slb_dns"
+              },
+              {
+                "name": "history_log_slb_rtsp",
+                "text": "SLB RTSP",
+                "subType": "slb_rtsp"
+              },
+              {
+                "name": "history_log_slb_smtp",
+                "text": "SLB SMTP",
+                "subType": "slb_smtp"
+              },
+              {
+                "name": "history_log_slb_rtmp",
+                "text": "SLB RTMP",
+                "subType": "slb_rtmp"
+              },
+              {
+                "name": "history_log_slb_diameter",
+                "text": "SLB DIAMETER",
+                "subType": "slb_diameter"
+              },
+              {
+                "name": "history_log_slb_mysql",
+                "text": "SLB MySQL",
+                "subType": "slb_mysql"
+              }
+            ]
+          },
+          {
+            "name": "script_log",
+            "text": "Script Log",
+            "widget": "LogBrowsing",
+            "type": "script",
+            "sub": [{
+              "name": "history_log_script_slb",
+              "text": "SLB",
+              "subType": "slb"
+            }]
+          },
+          {
+            "name": "aggregate_log",
+            "text": "Aggregate Log",
+            "widget": "LogBrowsing",
+            "type": "aggregate",
+            "sub": [{
+                "text": "Synflood",
+                "subType": "synflood"
+              },
+              {
+                "text": "GEO",
+                "subType": "geo"
+              },
+              {
+                "text": "IP Reputation",
+                "subType": "ip_reputation"
+              },
+              {
+                "text": "WAF",
+                "subType": "waf"
+              }
+            ]
+          }
+        ]
       },
       {
         "name": "log_setting",

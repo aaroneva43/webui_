@@ -1,0 +1,48 @@
+.physical {
+  display: table;
+  margin: auto;
+
+  svg {
+    margin-top: 30px;
+    width: 1000px;
+  }
+
+  .cloud {
+    -webkit-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    transform: translate(0,0);
+  }
+
+  .servers {
+    -webkit-transform: translate(340px, 46px);
+    -ms-transform: translate(340px, 46px);
+    transform: translate(340px, 46px);
+  }
+
+  .bubbles {
+    -webkit-transform: translate(600px,4px);
+    -ms-transform: translate(600px,4px);
+    transform: translate(600px,4px);
+  }
+
+  .cloud .icon-path path {
+    -webkit-transform: scale(0.06);
+    -ms-transform: scale(0.06);
+  }
+
+  .servers .icon-path path {
+    -webkit-transform: scale(0.03);
+    -ms-transform: scale(0.03);
+  }
+
+  .bubbles .icon-path path {
+    -webkit-transform: scale(0.01);
+    -ms-transform: scale(0.01);
+  }
+
+  .link {
+    fill: none;
+    stroke: #aaa;
+    stroke-width: 1px;
+  }
+}

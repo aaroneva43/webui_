@@ -26,7 +26,7 @@ class SystemInfo extends Component {
         <div className="card-block">
           <dl className="dl-horizontal">
             <dt>Host Name:</dt>
-            <dd>FortiADC-300D</dd>
+            <dd>FortiWAN-VM</dd>
 
             <dt>Current Time:</dt>
             <dd>Tue Nov 28 12:39:23 2017</dd>
@@ -35,10 +35,10 @@ class SystemInfo extends Component {
             <dd>0d, 0h, 48m, 29s</dd>
 
             <dt>Serial Number:</dt>
-            <dd>FAD3HD3A17000053</dd>
+            <dd>FWNVM3A17000053</dd>
 
             <dt>Firmware Version:</dt>
-            <dd>FortiADC-300D v5.0.0,build0001,171115 <button type="button" className="btn btn-primary btn-sm pull-right" onClick={ () => this.setState({ showUpdateAlert: true }) }>Update</button></dd>
+            <dd>FortiWAN-VM v1.1.0,build0001,171214 <button type="button" className="btn btn-primary btn-sm pull-right" onClick={ () => this.setState({ showUpdateAlert: true }) }>Update</button></dd>
 
             <dt>Virtual Domain:</dt>
             <dd>Virtual Domain Disabled <button type="button" className="btn btn-primary btn-sm pull-right" onClick={ () => this.setState({ showEnableAlert: true }) }>Enable</button></dd>

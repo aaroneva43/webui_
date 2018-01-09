@@ -46,11 +46,12 @@ export default function operConfigEntry(state = cfgInitialState, action) {
             let show = false;
             stackArray.pop();
 
-            if (stackArray.length > 0) {
+            if (stackArray.length) {
                 show = true;
-            }
-
+            } 
             return { stackObjArray: stackArray, modalShow: show };
+        } else {
+            return cfgInitialState;
         }
     }
     else if (CONFIG_ENTRY_RESET === action.type) {

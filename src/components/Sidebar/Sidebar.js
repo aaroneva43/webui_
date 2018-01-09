@@ -56,6 +56,16 @@ class Sidebar extends Component {
     let items = [];
     let that = this;
 
+    // set localStorage
+    if (!localStorage.DBPanelsShow) {
+      localStorage.setItem("DBPanelsShow", JSON.stringify({current: 'Main', dbs: {Main: ['SystemInfo', 'HAInfo', 'VSThroughput', 'InterfaceThroughput', 'LicenseInfo', 'CPU', 'Disk', 'RAM', 'VSConnections', 'RecentEventLogs']}}));
+    }
+    let DBPanelsShow = JSON.parse(localStorage.DBPanelsShow);
+    menuPieces.status.children = [];
+    _.each(Object.keys(DBPanelsShow.dbs), function(item){
+      menuPieces.status.children.push({name: item, text: item, widget: "Status"});
+    });
+
     menu.vdom_disabled.forEach(function(prop) {
       let obj = {
         name: menuPieces[prop].text,

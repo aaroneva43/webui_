@@ -10,7 +10,8 @@ import { connect } from 'react-redux';
 
 @connect((store) => {
   return {
-    store
+    store,
+    form: store.form
   };
 })
 
@@ -33,6 +34,7 @@ class ModalConfig extends Component {
    componentWillMount() {
        this.props.dispatch(configEntryReset());
        this.setState({lastGiveObj: this.props.givenObj});
+       //console.log('dave: ', this.props.lastGiveObj)
     }
 
    componentWillReceiveProps(nextProps) {
@@ -40,7 +42,7 @@ class ModalConfig extends Component {
         let newObj = nextProps.givenObj,
             oldObj = this.props.operConfigEntry.stackObjArray[this.props.operConfigEntry.stackObjArray.length-1],
             nextObj = nextProps.operConfigEntry.stackObjArray[nextProps.operConfigEntry.stackObjArray.length-1];
-            console.log('dave oldObj ===> ', oldObj, ' newObj ===> ', nextObj);
+            //console.log('dave oldObj ===> ', oldObj, ' newObj ===> ', nextObj);
 
         if (
             typeof newObj !== 'undefined' &&
@@ -97,45 +99,6 @@ class ModalConfig extends Component {
         // }
    }
 
-   handleSubmits(values) {
-    ///console.log(`You submitted.:\n\n${JSON.stringify(values, null, 2)}`);
-
-    // this.props.onFormSubmit(values); // props from parent component: NOT need it, just make ajax call here
-    
-    // console.log('values param ==> ', values)
-    // console.log('props.store.form.formname.values: ', this.props.store.form.formname.values)
-    // console.log('dave (handleSubmit): ', this.props.store.form)
-
-    let formName = Object.keys(this.props.store.form).toString();
-    console.log('dave formName ==> ', formName)
-    let formValues = this.props.store.form[formName].values;
-
-    /*
-    // future format: (ex: {1775: {mkey: zzz...}})
-    let formObj = {}
-    formObj[formName] = formValues
-    console.log('david (ModalConfig) ===> ', formObj)
-    */
-
-    let localArray = localStorage.getItem('data');
-    ///console.log('localArray ==> ', localArray, ' - ', typeof localArray);
-    let dataArray = [];
-
-    if (localArray === null) {
-        dataArray.push(formValues);
-    } else {
-        dataArray = JSON.parse(localArray);
-        dataArray.push(formValues);
-    }
-
-    let cleanedDataArray = JSON.stringify(dataArray);
-    // I think this need to be in action creator:
-    localStorage.setItem("data", cleanedDataArray);
-
-    this.props.dispatch(configEntryDone());
-    this.props.dispatch(addFormData(formName, cleanedDataArray));
-    }
-
    render() {
        let viewObj;
        let lgTitle;
@@ -147,34 +110,44 @@ class ModalConfig extends Component {
         delete divProps.layout;
 
         viewObj =  operConfigEntry.stackObjArray[operConfigEntry.stackObjArray.length-1];
+//console.log('dave viewObj: ', viewObj)
         if (typeof viewObj === 'undefined' || viewObj === null) {
             return null;
         }
 
-        // console.log('viewObj========> ', viewObj)
-        // alert('view obj')
-
-        lgTitle = viewObj.title;
-
         const lgProps = {
             ref: viewObj.gid,
-            onSubmit: this.handleSubmits.bind(this),
             add: viewObj.addView,
             value: viewObj.valueObj
         }
 
-        let stack = this.props.operConfigEntry.stackObjArray;
+        let stack = operConfigEntry.stackObjArray;
         let gid = stack[stack.length-1].gid;
         let moduleInfo = getModuleInfo(gid, this.props.store.ConfigData);
         ///this.setState({ moduleInfo: getModuleInfo(gid, divProps.store.ConfigData) });
-        ///console.log('moduleInfo ===> ', moduleInfo)
+        
+        // console.log('dave (modalConfig.js) stack ===> ', stack)
+        // console.log('dave (modalConfig.js) gid : ', gid)
 
-        lgContent = stack.length ? <Form gid={ gid } {...lgProps} moduleInfo={moduleInfo} /> : '';
+        // lgContent = stack.length ? 
+        // <Form gid={ gid } form={gid} {...lgProps} moduleInfo={moduleInfo} />
+        // : '';
+
+        // lgContent = stack.length ? (
+        //     <div>
+        //     {stack.map((result, index) => (
+        //         <Form gid={ gid } form={gid} {...lgProps} key={ index } moduleInfo={moduleInfo} showContent={ index == stack.length-1 } />
+        //     ))}
+        //     </div>
+        // ) : '';
+
+        //lgContent = stack.length ? <Form form={gid} gid={ gid } {...lgProps} moduleInfo={moduleInfo} /> : '';
         lgTitle = stack.length ? stack[stack.length-1].gid : null;
         children = moduleInfo.children;
 
         let stackarray;
         if (stack.length > 1) {
+
             stackarray = (
                 <ul className="circle-step">
                 {stack.map((result, index) => (
@@ -182,15 +155,58 @@ class ModalConfig extends Component {
                 ))}
                 </ul>
             );
+
+             lgContent = (
+                <div>
+                {stack.map((result, index, stack) => (
+                    //console.log('dave: ', result, ' index ', index, ' arr: ', stack);
+                    <Form gid={ gid } form={gid.toString()} {...lgProps} key={ index } moduleInfo={moduleInfo} showContent={ index == stack.length-1 } />
+                ))}
+                </div>
+                );
+
+        } else {
+            lgContent = stack.length ? <Form gid={ gid } form={gid.toString()} {...lgProps} moduleInfo={moduleInfo} /> : '';
         }
+
+        const fnsubmit = () => {
+            let formName = this.props.store.operConfigEntry.stackObjArray[this.props.store.operConfigEntry.stackObjArray.length-1].gid.toString();
+            let formValues = this.props.store.form[formName].values;
+
+            if (formName === '1775') {
+                let localArray = localStorage.getItem('data');
+                ///console.log('localArray ==> ', localArray, ' - ', typeof localArray);
+                let dataArray = [];
+                if (localArray === null) {
+                dataArray.push(formValues);
+                } else {
+                    dataArray = JSON.parse(localArray);
+                    dataArray.push(formValues);
+                }
+
+                const cleanedDataArray = JSON.stringify(dataArray);
+                // I think this need to be in action creator:
+                localStorage.setItem("data", cleanedDataArray);
+
+                this.props.dispatch(configEntryDone());
+                this.props.dispatch(addFormData(formName, cleanedDataArray));
+
+            } else {
+                console.log('form values: ', formName, ' : ', formValues);
+                alert(`submitting ${formName} form`);
+                this.props.dispatch(configEntryDone());
+            }
+            
+        };
 
        return(
             <DisplayModal
-                isOpen={this.props.operConfigEntry.modalShow}
+                isOpen={operConfigEntry.modalShow}
                 stackarray={stackarray}
                 onTitle={lgTitle}
                 onContent={lgContent}
                 children={ children }
+                onSubmits={fnsubmit}
             />
         )
     }
@@ -200,7 +216,8 @@ class ModalConfig extends Component {
 //     onClose: React.PropTypes.func.isRequired
 // };
 
-// export default ModalConfig;
 export default connect(
-    state => ({operConfigEntry : state.operConfigEntry})
+    state => ({
+        operConfigEntry : state.operConfigEntry,
+    })
  )(ModalConfig);

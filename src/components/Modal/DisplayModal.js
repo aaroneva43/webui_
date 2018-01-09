@@ -38,13 +38,11 @@ class DisplayModal extends Component {
         });
     }
 
-    handleOnAdd(gid, modalType) {
-    alert('replace content by open modal')
-    ///this.props.dispatch(openModal(gid, modalType));
-    }
+    // handleOnAdd(gid, modalType) {
+    //     alert('replace content by open modal')
+    // }
 
     handleOnClose() {
-        ///this.props.dispatch(closeModal());
         this.props.dispatch(configEntryDone());
     }
 
@@ -52,7 +50,7 @@ class DisplayModal extends Component {
        const divProps = Object.assign({}, this.props);
         ///delete divProps.layout;
 
-       ///console.log('mmm ===> divPros (DisplayModal.js) ===========> ', divProps);
+       //console.log('dave divPros (DisplayModal.js) ===========> ', divProps);
 
         if (divProps.stackarray === 'undefined')
         {
@@ -100,8 +98,8 @@ class DisplayModal extends Component {
                 </ModalBody>
 
                 <ModalFooter>
-                    <Button color="primary" onClick={ divProps.onContent.props.onSubmit }>Save</Button>{' '}
-                    <Button color="secondary" onClick={ this.handleOnClose.bind(this) }>Cancel</Button>
+                    <Button color="primary" onClick={ divProps.onSubmits }>Save</Button>{' '}
+                    <Button color="secondary" onClick={this.handleOnClose.bind(this)}>Cancel</Button>
                 </ModalFooter>
         </Modal>
         );

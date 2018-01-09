@@ -17533,6 +17533,52 @@
       }
     }
   },
+  "5053": {
+    "columns": [
+      {
+        "name": "mkey",
+        "label": "Interface",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "device",
+        "label": "Device",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "mac",
+        "label": "MAC",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "ip",
+        "label": "IP",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "host",
+        "label": "Host Info",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "expires",
+        "label": "Expires",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "status",
+        "label": "Status",
+        "cell": "status",
+        "header": "string"
+      }
+    ]
+  },
   "5150": {
     "grid": {
       "cloneable": false
@@ -18045,6 +18091,52 @@
         "label": "Comments"
       }
     }
+  },
+  "5200": {
+    "columns": [
+      {
+        "name": "mkey",
+        "label": "Tunnel Name",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "localip",
+        "label": "Local IP",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "remoteip",
+        "label": "Remote IP",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "status",
+        "label": "Status",
+        "cell": "status",
+        "header": "string"
+      },
+      {
+        "name": "incoming",
+        "label": "Incoming Data",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "outgoing",
+        "label": "Outgoing Data",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "keylife",
+        "label": "Key Life",
+        "cell": "status",
+        "header": "string"
+      }
+    ]
   },
   "5201": {
     "grid": {
@@ -18743,6 +18835,34 @@
         }
       }
     }
+  },
+  "5339": {
+    "columns": [
+      {
+        "name": "mkey",
+        "label": "FQDN",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "ip",
+        "label": "IP",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "hit",
+        "label": "Hit",
+        "cell": "string",
+        "header": "string"
+      },
+      {
+        "name": "expires",
+        "label": "Expires",
+        "cell": "status",
+        "header": "string"
+      }
+    ]
   },
   "5401": {
     "editors": {

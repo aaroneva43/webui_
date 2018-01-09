@@ -129,6 +129,9 @@ class Grid extends Component {
     if (cols[0].cell !== 'checkbox') {
       cols.unshift({ cell: 'checkbox' });
     }
+    if (!that.state.moduleInfo.editors) {
+      cols.shift();
+    }
     if (cols[cols.length - 1].cell !== 'actions') {
       cols.push({ cell: 'actions' });
     }
@@ -231,6 +234,7 @@ class Grid extends Component {
 
     return (
       <div className="grid-page">
+	{ this.state.moduleInfo.editors &&
         <div className="header clearfix">
           <div className="pull-left">
             <Button color="primary" className='mr-3' onClick={ this.handleOnForm.bind(this) }>Create New</Button>{' '}
@@ -240,6 +244,7 @@ class Grid extends Component {
             <Button color="secondary">Refresh</Button>
           </div>
         </div>
+	}
         { this.state.colsDDOpen &&
           <ColsDD allCols={ this.state.moduleInfo.columns } displayCols={ this.state.displayCols } setSelectedColumns={ this.setSelectedColumns } />
         }

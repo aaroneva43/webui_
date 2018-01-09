@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { compose } from 'redux'
 import { connect } from 'react-redux';
 import { Row, Col, Button, ButtonGroup } from 'reactstrap';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
@@ -8,8 +9,10 @@ import classnames from 'classnames';
 import { Field, reduxForm } from 'redux-form'
 import _ from 'underscore';
 import s from 'underscore.string';
+import DualListBox from 'react-dual-listbox';
+import 'react-dual-listbox/lib/react-dual-listbox.css';
 
-@connect((store) => {
+@connect((store, props) => {
   return {
     store
   };
@@ -25,7 +28,8 @@ class Form extends Component {
       specifics: {},
       gid: this.props.gid,
       activeTab: 0,
-      templates: this.props.store.ConfigData.Templates
+      templates: this.props.store.ConfigData.Templates,
+      selected: []
     };
   }
 
@@ -59,7 +63,12 @@ class Form extends Component {
     ) {
       this.fetchData(moduleInfo);
     }
+    /// maybe i dispatchformname here?
   }
+
+  onChange(selected) {
+        this.setState({ selected });
+    }
 
   fetchData(props) {
     ///fids = specifics[props.gid].editors;
@@ -124,8 +133,10 @@ class Form extends Component {
     let fieldType = 'InputField';
     let formField;
     let options = {};
+    let options2 = [];
     let addOptBool = false;
     let validateArr = [];
+    let multipleField = 0
 
     // console.log('dave: fieldData: ', fieldData);
     // console.log('dave field : ', field);
@@ -144,6 +155,22 @@ class Form extends Component {
        fieldType = 'ToggleField';
      }
 
+     if (fieldData.multiOpt) {
+       fieldType = 'CheckBoxField';
+     }
+
+     if (fieldData.multi) {
+       multipleField = 1;
+     }
+
+     if (fieldData.multiAttr) {
+       fieldType = 'DualList';
+       options2= fieldData.options ? fieldData.options.data : []
+       addOptBool = fieldData.create ? true : false
+     }
+
+     
+
    /// this.props.dispatch(openModal(gid, modalType));
    /// this.props.dispatch(configEntryAdd(fieldData.create.gid))
 
@@ -152,7 +179,7 @@ class Form extends Component {
       case 'SelectField':
         formField =
           <Field
-              multi={fieldData.multi ? 'multi' : ''}
+              multi={multipleField ? 'multi' : ''}
               name={fieldData.fieldName}
               label={fieldData.label}
               key={field}
@@ -219,7 +246,13 @@ class Form extends Component {
               desc={fieldData.help}
               helper={this.props.store.ConfigModal.modalform}
           />
+      break;
 
+      case 'DualList':
+        formField =
+          <DualListBox 
+            options={ options2 } 
+            selected={this.state.selected} onChange={this.onChange.bind(this)} />
       break;
 
       default:
@@ -243,7 +276,9 @@ class Form extends Component {
   }
 
   passConditions(conditions) {
-    let formName = Object.keys(this.props.store.form).toString();
+    if (!_.isEmpty(this.props.store.form)) {
+        ///console.log('passCond: ', this.props)
+    let formName = this.props.gid;
     let requiredResults = [],
       optionalResults = [],
       values = this.props.store.form[formName].values || {};
@@ -285,6 +320,8 @@ class Form extends Component {
       pass = _.some(optionalResults);
     }
     return pass;
+    }
+    
   }
 
   toggle(tab) {
@@ -296,6 +333,15 @@ class Form extends Component {
   }
 
   render() {
+
+    const divProps = Object.assign({}, this.props);
+        //delete divProps.layout;
+console.log('showContent: ', divProps.showContent);
+console.log('content: ', divProps.onContent)
+        if (divProps.showContent === false) {
+            return null;
+        }
+
     let that = this;
     let myFields = this.state.mergedFields;
     let tmpl = this.state.templates[this.state.gid] ? this.state.templates[this.state.gid] : this.state.templates['default'];
@@ -305,7 +351,7 @@ class Form extends Component {
       for (var element of myFields) {
         if(element.fieldName == item) {
           if(element.conditions && element.conditions.conditions) {
-            if (!that.passConditions(element.conditions.conditions)) return;
+           if (!that.passConditions(element.conditions.conditions)) return;
           }
           return (
             <Col lg="4">
@@ -415,6 +461,7 @@ function validate(values, props) {
   
   var validateConfig = {};
   var fields = props.moduleInfo.fields;
+  var module = props.moduleInfo.module;
   //var mustFields = [];
   var options = {};
 
@@ -429,7 +476,7 @@ function validate(values, props) {
 				];
 
     var fieldName = field.fieldName;
-    var mkeyField = 'mkey';
+    var mkeyField = module.mkeyField;
 
       if (!fieldName) {
         console.log('This field has no \'fieldName\'', field);
@@ -574,17 +621,31 @@ function validate(values, props) {
   return validateConfig;
 }
 
+
 Form = reduxForm({
   validate,
-  //form: formName, // a unique identifier for this form
-  enableReinitialize: true
+  //enableReinitialize: true,
+  destroyOnUnmount: true,
+  //forceUnregisterOnUnmount: false
 })(Form);
 
 Form = connect(
   state => ({
     initialValues: state.operConfigEntry.stackObjArray[state.operConfigEntry.stackObjArray.length-1].formdata,
-    form: state.operConfigEntry.stackObjArray[state.operConfigEntry.stackObjArray.length-1].gid
+    //form: state.operConfigEntry.stackObjArray[state.operConfigEntry.stackObjArray.length-1].gid.toString()
   })
 )(Form);
+
+
+// Form = compose(connect((state, props) => (
+//   {
+//     initialValues: state.operConfigEntry.stackObjArray[state.operConfigEntry.stackObjArray.length-1].formdata,
+//     //form: state.operConfigEntry.stackObjArray[state.operConfigEntry.stackObjArray.length-1].gid
+//   }
+// )), 
+// reduxForm(
+//   {
+//     validate
+//   }))(Form)
 
 export default Form;

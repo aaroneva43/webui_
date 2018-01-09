@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import _ from 'lodash'
 
 class Widget extends Component {
   constructor(props) {
@@ -27,7 +28,8 @@ class Widget extends Component {
     let RequestLazyBundle = <div />;
 
     try {
-      RequestLazyBundle = require('./widgets/'+this.state.widget+'/'+this.state.widget).default;
+      let dir = _.endsWith(this.state.widget, '_') ? _.dropRight(this.state.widget).join('') : this.state.widget
+      RequestLazyBundle = require('./widgets/'+ dir +'/'+this.state.widget).default;
     } catch (ex) {
       error = true;
     }
