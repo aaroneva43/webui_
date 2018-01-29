@@ -23,24 +23,29 @@ const line = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [10, 12, 8, 6, 14, 12]
+      data: []
     }
   ]
 };
 
+for (let i = 0; i < 59; i++) {
+  line.datasets[0].data.push(0);
+}
+
 const doughnut = {
   labels: [
-    'CPU %'
+    'CPU usage %',
+    'CPU free %'
   ],
   datasets: [{
     data: [10, 90],
     backgroundColor: [
-    '#FF6384',
-    '#36A2EB'
+    '#60B044',
+    '#e0e0e0'
     ],
     hoverBackgroundColor: [
-    '#FF6384',
-    '#36A2EB'
+    '#60B044',
+    '#e0e0e0'
     ]
   }]
 };
@@ -48,11 +53,65 @@ const doughnut = {
 class CPU extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      data: []
+    };
+    this.loadData = this.loadData.bind(this);
+  }
+
+  loadData() {
+    /*
+    $.get('/platform//resouces_usage', function (result) {
+
+      result = result || {};
+      result = $.type(result) == 'object' ? result : JSON.parse(result);
+
+    });
+    */
+    let result = Math.floor((Math.random() * 100) + 1);
+    if (result < 30) {
+      doughnut.datasets[0].backgroundColor[0] = doughnut.datasets[0].hoverBackgroundColor[0] = '#60B044';
+    } else if (result < 60) {
+      doughnut.datasets[0].backgroundColor[0] = doughnut.datasets[0].hoverBackgroundColor[0] = '#F6C600';
+    } else if (result < 90) {
+      doughnut.datasets[0].backgroundColor[0] = doughnut.datasets[0].hoverBackgroundColor[0] = '#F97600';
+    } else {
+      doughnut.datasets[0].backgroundColor[0] = doughnut.datasets[0].hoverBackgroundColor[0] = '#FF0000';
+    }
+    doughnut.datasets[0].data = [result, 100 - result];
+    line.datasets[0].data.shift();
+    line.datasets[0].data.push(result);
+
+    /* update timer x axis */
+    line.labels = this.getTimeseries();
+
+    this.setState({
+        data: doughnut.datasets[0].data
+    });
+  }
+
+  componentWillMount() {
+    this.loadData();
+    this.timer = setInterval(this.loadData, 10000);
   }
 
   handleClose() {
     this.props.close('CPU');
+    clearInterval(this.timer);
+  }
+
+  getTimeseries() {
+    let categoriesArrStr = []; //caegoryAxis arr
+    let startStamp = Math.round(new Date() / 1000);
+    for (let i = 0; i < 59; i++) {
+      let oneStamp = startStamp - 10 * i; //this only shows 10mins
+      let newDate = new Date();
+      newDate.setTime(oneStamp * 1000);
+      let dateStr = newDate.getHours() + ":" + newDate.getMinutes() + ":" + newDate.getSeconds();
+      categoriesArrStr.push(dateStr);
+    }
+    categoriesArrStr.reverse();
+      return categoriesArrStr;
   }
 
   render() {
@@ -74,6 +133,9 @@ class CPU extends Component {
                     circumference: 1 * Math.PI
                   }}
                 />
+	        <div className="card-text">
+	          {this.state.data[0]} %
+	        </div>
               </div>
             </div>
             <div className="col-8">
@@ -81,11 +143,21 @@ class CPU extends Component {
                 <Line data={line}
                   options={{
                     scales: {
+	              xAxes: [{
+			ticks: {
+			  maxTicksLimit: 6
+			}
+		      }],
                       yAxes: [{
                         ticks: {
                           suggestedMin: 0,
                           suggestedMax: 100
-                        }
+                        },
+                        scaleLabel:{
+                          display: true,
+	                  labelString: '%',
+	                  fontColor: "#546372"
+	                }
                       }]
                     }
                   }}

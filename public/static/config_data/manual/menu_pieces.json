@@ -1272,15 +1272,7 @@
     "children": [{
       "name": "Main",
       "text": "Main",
-<<<<<<< HEAD
-<<<<<<< HEAD
-      "widget": "Status"
-=======
       "widget": "Status_"
->>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
-=======
-      "widget": "Status_"
->>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
     }, {
       "name": "services",
       "text": "Services",
@@ -1290,18 +1282,6 @@
         "text": "Links",
         "widget": "LinkAnalytics"
       },{
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "name": "link_health",
-        "text": "Health",
-        "widget": "LinkAnalytics"
-      },{
-        "name": "link_event",
-        "text": "Event",
-        "widget": "LinkEvent"
-=======
-=======
->>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
         "name": "virtual_server",
         "text": "Virtual Server",
         "widget": "VirtualServer"
@@ -1350,10 +1330,6 @@
           "text": "IPSec Tunnel",
 	  "gid": "5200"
         }]
-<<<<<<< HEAD
->>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
-=======
->>>>>>> 8b61a830156f7c3de8d6f6d8394be8bc7eddf90a
       }]
     }]
   },

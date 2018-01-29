@@ -32,7 +32,7 @@ const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? 'lightgray' : 'transparent'
 });
 
-class Status extends Component {
+class Status_ extends Component {
   constructor(props) {
     super(props);
 
@@ -212,4 +212,4 @@ class MyPanel extends Component {
   }
 }
 
-export default Status;
+export default Status_;
